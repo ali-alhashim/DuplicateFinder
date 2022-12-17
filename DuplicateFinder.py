@@ -37,6 +37,7 @@ folder_selected = filedialog.askdirectory()
 counter = 0
 fileList =[]
 duplicateList =[]
+duplicateOne =[]
 for root, dir, files in os.walk(folder_selected):
     for file in files:
         filePath = root +'/'+str(file)
@@ -47,7 +48,7 @@ for root, dir, files in os.walk(folder_selected):
 
 
 print('Total Files : ',len(fileList))
-counterDuplicate = 0
+
 for x in range(len(fileList)):
     for y in range(len(fileList)):
         if y+x+1 < len(fileList):
@@ -58,10 +59,26 @@ for x in range(len(fileList)):
         if fileList[x][1] == fileList[z][1]:
             duplicateList.append(fileList[x])
             duplicateList.append(fileList[z])
-            counterDuplicate = counterDuplicate+1
+            duplicateOne.append(fileList[z])
+            
 
 
 
 
 print('the result for all duplicate files : ', duplicateList)
-print('Total Files : ',counterDuplicate)
+print('Total Files : ',len(duplicateOne))
+
+Confirmation = input('please write yes to delete the duplicated files ! :\n')
+
+if Confirmation =='yes':
+    print('Deleteting.....')
+    for x in range(len(duplicateOne)):
+        file = duplicateOne[x][0]
+        print('delete file '+file)
+        try:
+            os.remove(file)
+        except Exception as e:
+            print(e)
+
+else:
+    print('No Action...See You')
