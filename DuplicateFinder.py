@@ -9,26 +9,30 @@ from tkinter import *
 import os
 import hashlib
 
-
+######################################## Hash function
 def hash_file(filename):
-   """"This function returns the SHA-1 hash
-   of the file passed into it"""
+ 
    
    # make a hash object
-   h = hashlib.sha1()
+   h = hashlib.blake2b()
 
    # open file for reading in binary mode
    with open(filename,'rb') as file:
-       print('Reading binary for getting hash SHA-1.....')
+       print('Reading binary for getting hash blake2b.....')
        # loop till the end of the file
        chunk = 0
        while chunk != b'':
            # read only 1024 bytes at a time
-           chunk = file.read(1024)
+           # update for speed I change to 64000
+           chunk = file.read(64000)
            h.update(chunk)
 
    # return the hex representation of digest
    return h.hexdigest()
+
+####################################################################
+
+
 
 root = Tk()
 root.withdraw()
@@ -38,17 +42,23 @@ counter = 0
 fileList =[]
 duplicateList =[]
 duplicateOne =[]
+
+############# list file with hash #################
 for root, dir, files in os.walk(folder_selected):
     for file in files:
         filePath = root +'/'+str(file)
+        ## get file hash
         fileHash = hash_file(filePath)
+
         print(filePath, '| Hash = ',fileHash)
         fileList.append((filePath,fileHash))
 
 
 
 print('Total Files : ',len(fileList))
+######################################################
 
+### compare the hash #################################
 for x in range(len(fileList)):
     for y in range(len(fileList)):
         if y+x+1 < len(fileList):
@@ -61,24 +71,27 @@ for x in range(len(fileList)):
             duplicateList.append(fileList[z])
             duplicateOne.append(fileList[z])
             
-
+###############################################################
 
 
 
 print('the result for all duplicate files : ', duplicateList)
 print('Total Files : ',len(duplicateOne))
 
-Confirmation = input('please write yes to delete the duplicated files ! :\n')
+if len(duplicateOne) !=0:
+    Confirmation = input('please write yes to delete the duplicated files ! :\n')
 
-if Confirmation =='yes':
-    print('Deleteting.....')
-    for x in range(len(duplicateOne)):
-        file = duplicateOne[x][0]
-        print('delete file '+file)
-        try:
-            os.remove(file)
-        except Exception as e:
-            print(e)
+    if Confirmation =='yes':
+        print('Deleteting.....')
+        for x in range(len(duplicateOne)):
+            file = duplicateOne[x][0]
+            print('delete file '+file)
+            try:
+                os.remove(file)
+            except Exception as e:
+                print(e)
 
+    else:
+        print('No Action...See You')
 else:
-    print('No Action...See You')
+    print('Done!  No Duplicate')
