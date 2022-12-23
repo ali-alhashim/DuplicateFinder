@@ -9,7 +9,7 @@ from tkinter import *
 import os
 import hashlib
 import multiprocessing 
-from timeit import default_timer as timer
+
 
 
 
